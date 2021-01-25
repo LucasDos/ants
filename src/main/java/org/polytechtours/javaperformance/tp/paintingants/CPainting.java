@@ -289,19 +289,19 @@ public class CPainting extends Canvas implements MouseListener {
    * Titre : void paint(Graphics g) Description : Surcharge de la fonction qui
    * est appelé lorsque le composant doit être redessiné
    ******************************************************************************/
-  @Override
-  public void paint(Graphics pGraphics) {
-    int i, j;
-
-    synchronized (mMutexCouleurs) {
-      for (i = 0; i < mDimension.width; i++) {
-        for (j = 0; j < mDimension.height; j++) {
-          pGraphics.setColor(mCouleurs[i][j]);
-          pGraphics.fillRect(i, j, 1, 1);
-        }
-      }
-    }
-  }
+//  @Override
+//  public void paint(Graphics pGraphics) {
+//    int i, j;
+//
+//    synchronized (mMutexCouleurs) {
+//      for (i = 0; i < mDimension.width; i++) {
+//        for (j = 0; j < mDimension.height; j++) {
+//          pGraphics.setColor(mCouleurs[i][j]);
+//          pGraphics.fillRect(i, j, 1, 1);
+//        }
+//      }
+//    }
+//  }
 
   /******************************************************************************
    * Titre : void colorer_case(int x, int y, Color c) Description : Cette
