@@ -12,7 +12,7 @@ public class CFourmi {
   // le generateur aléatoire (Random est thread safe donc on la partage)
   private static Random GenerateurAleatoire = new Random();
   // couleur déposé par la fourmi
-  private Color mCouleurDeposee;
+  private int mCouleurDeposee;
   private float mLuminanceCouleurSuivie;
   // objet graphique sur lequel les fourmis peuvent peindre
   private CPainting mPainting;
@@ -36,13 +36,13 @@ public class CFourmi {
 
   /*************************************************************************************************
   */
-  public CFourmi(Color pCouleurDeposee, Color pCouleurSuivie, float pProbaTD, float pProbaG, float pProbaD,
+  public CFourmi(int pCouleurDeposee, float pProbaTD, float pProbaG, float pProbaD,
       float pProbaSuivre, CPainting pPainting, char pTypeDeplacement, float pInit_x, float pInit_y, int pInitDirection,
       int pTaille, float pSeuilLuminance, PaintingAnts pApplis) {
 
     mCouleurDeposee = pCouleurDeposee;
-    mLuminanceCouleurSuivie = 0.2426f * pCouleurDeposee.getRed() + 0.7152f * pCouleurDeposee.getGreen()
-        + 0.0722f * pCouleurDeposee.getBlue();
+    mLuminanceCouleurSuivie = 0.2426f * CColor.getRed(pCouleurDeposee) + 0.7152f * CColor.getGreen(pCouleurDeposee)
+        + 0.0722f * CColor.getBlue(pCouleurDeposee);
     mPainting = pPainting;
     mApplis = pApplis;
 
@@ -96,7 +96,7 @@ public class CFourmi {
     float tirage, prob1, prob2, prob3, total;
     int[] dir = new int[3];
     int i, j;
-    Color lCouleur;
+    int lCouleur;
 
     mNbDeplacements++;
 
@@ -110,9 +110,10 @@ public class CFourmi {
     i = modulo(x + CFourmi.mIncDirection[modulo(mDirection - mDecalDir, 8)][0], mPainting.getLargeur());
     j = modulo(y + CFourmi.mIncDirection[modulo(mDirection - mDecalDir, 8)][1], mPainting.getHauteur());
     if (mApplis.mBaseImage != null) {
-      lCouleur = new Color(mApplis.mBaseImage.getRGB(i, j));
+      //lCouleur = new Color(mApplis.mBaseImage.getRGB(i, j));
+      lCouleur = mApplis.mBaseImage.getRGB(i, j);
     } else {
-      lCouleur = new Color(mPainting.getCouleur(i, j).getRGB());
+      lCouleur = mPainting.getCouleur(i, j);
     }
     if (testCouleur(lCouleur)) {
       dir[0] = 1;
@@ -121,9 +122,9 @@ public class CFourmi {
     i = modulo(x + CFourmi.mIncDirection[mDirection][0], mPainting.getLargeur());
     j = modulo(y + CFourmi.mIncDirection[mDirection][1], mPainting.getHauteur());
     if (mApplis.mBaseImage != null) {
-      lCouleur = new Color(mApplis.mBaseImage.getRGB(i, j));
+      lCouleur = mApplis.mBaseImage.getRGB(i, j);
     } else {
-      lCouleur = new Color(mPainting.getCouleur(i, j).getRGB());
+      lCouleur = mPainting.getCouleur(i, j);
     }
     if (testCouleur(lCouleur)) {
       dir[1] = 1;
@@ -131,9 +132,9 @@ public class CFourmi {
     i = modulo(x + CFourmi.mIncDirection[modulo(mDirection + mDecalDir, 8)][0], mPainting.getLargeur());
     j = modulo(y + CFourmi.mIncDirection[modulo(mDirection + mDecalDir, 8)][1], mPainting.getHauteur());
     if (mApplis.mBaseImage != null) {
-      lCouleur = new Color(mApplis.mBaseImage.getRGB(i, j));
+      lCouleur = mApplis.mBaseImage.getRGB(i, j);
     } else {
-      lCouleur = new Color(mPainting.getCouleur(i, j).getRGB());
+      lCouleur = mPainting.getCouleur(i, j);
     }
     if (testCouleur(lCouleur)) {
       dir[2] = 1;
@@ -180,6 +181,10 @@ public class CFourmi {
 
     // coloration de la nouvelle position de la fourmi
     mPainting.setCouleur(x, y, mCouleurDeposee, mTaille);
+    System.out.println("x : " +  Integer.toString(x));
+    System.out.println("y : " +  Integer.toString(y));
+    System.out.println("mCouleurDepose : " +  Integer.toString(mCouleurDeposee));
+    System.out.println("mTaille : " +  Integer.toString(mTaille));
 
     mApplis.IncrementFpsCounter();
   }
@@ -221,12 +226,12 @@ public class CFourmi {
    * d'une couleur avec la couleur suivie
    *
    */
-  private boolean testCouleur(Color pCouleur) {
+  private boolean testCouleur(int pCouleur) {
     boolean lReponse = false;
     float lLuminance;
 
     /* on calcule la luminance */
-    lLuminance = 0.2426f * pCouleur.getRed() + 0.7152f * pCouleur.getGreen() + 0.0722f * pCouleur.getBlue();
+    lLuminance = 0.2426f * CColor.getRed(pCouleur) + 0.7152f * CColor.getGreen(pCouleur) + 0.0722f * CColor.getBlue(pCouleur);
 
     /* test */
     if (Math.abs(mLuminanceCouleurSuivie - lLuminance) < mSeuilLuminance) {

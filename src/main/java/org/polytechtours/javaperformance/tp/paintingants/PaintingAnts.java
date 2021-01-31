@@ -1,5 +1,7 @@
 package org.polytechtours.javaperformance.tp.paintingants;
 
+import sun.security.krb5.internal.ccache.CCacheOutputStream;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -234,7 +236,7 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
   private void readParameterFourmis() {
     String lChaine;
     int R, G, B;
-    Color lCouleurDeposee, lCouleurSuivie;
+    int lCouleurDeposee;
     CFourmi lFourmi;
     float lProbaTD, lProbaG, lProbaD, lProbaSuivre, lSeuilLuminance;
     char lTypeDeplacement = ' ';
@@ -315,16 +317,16 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
         if (B == -1) {
           B = (int) (Math.random() * 256);
         }
-        lCouleurDeposee = new Color(R, G, B);
+        lCouleurDeposee = CColor.getRGB(R, G, B);
         System.out.print("Parametres de la fourmi " + lNbFourmis + ":(" + R + "," + G + "," + B + ")");
 
         // lecture de la couleur suivie
-        StringTokenizer lSTCouleurSuivi = new StringTokenizer(lSTParam.nextToken(), ",");
-        R = readIntParameter(lSTCouleurSuivi.nextToken());
-        G = readIntParameter(lSTCouleurSuivi.nextToken());
-        B = readIntParameter(lSTCouleurSuivi.nextToken());
-        lCouleurSuivie = new Color(R, G, B);
-        System.out.print("(" + R + "," + G + "," + B + ")");
+//        StringTokenizer lSTCouleurSuivi = new StringTokenizer(lSTParam.nextToken(), ",");
+//        R = readIntParameter(lSTCouleurSuivi.nextToken());
+//        G = readIntParameter(lSTCouleurSuivi.nextToken());
+//        B = readIntParameter(lSTCouleurSuivi.nextToken());
+//        lCouleurSuivie = new Color(R, G, B);
+//        System.out.print("(" + R + "," + G + "," + B + ")");
 
         // lecture de la position de la direction de départ et de la taille de
         // la trace
@@ -374,7 +376,7 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
             "(" + lTypeDeplacement + "," + lProbaG + "," + lProbaTD + "," + lProbaD + "," + lProbaSuivre + ");");
 
         // création de la fourmi
-        lFourmi = new CFourmi(lCouleurDeposee, lCouleurSuivie, lProbaTD, lProbaG, lProbaD, lProbaSuivre, mPainting,
+        lFourmi = new CFourmi(lCouleurDeposee, lProbaTD, lProbaG, lProbaD, lProbaSuivre, mPainting,
             lTypeDeplacement, lInit_x, lInit_y, lInitDirection, lTaille, lSeuilLuminance, this);
         mColonie.addElement(lFourmi);
         lNbFourmis++;
@@ -383,7 +385,7 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
     {
 
       int i;
-      Color lTabColor[] = new Color[lNbFourmis];
+      int lTabColor = 0xFFFFFF;
       int lColor;
 
       // initialisation aléatoire de la couleur de chaque fourmi
@@ -391,7 +393,7 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
         R = (int) (Math.random() * 256);
         G = (int) (Math.random() * 256);
         B = (int) (Math.random() * 256);
-        lTabColor[i] = new Color(R, G, B);
+        lTabColor = CColor.getRGB(R, G, B);
       }
 
       // construction des fourmis
@@ -425,16 +427,16 @@ public class PaintingAnts extends java.applet.Applet implements Runnable {
         lProbaD = (float) (1.0 - (lProbaTD + lProbaG));
         lProbaSuivre = (float) (0.5 + 0.5 * Math.random());
 
-        System.out.print(
-            "Random:(" + lTabColor[i].getRed() + "," + lTabColor[i].getGreen() + "," + lTabColor[i].getBlue() + ")");
-        System.out.print("(" + lTabColor[lColor].getRed() + "," + lTabColor[lColor].getGreen() + ","
-            + lTabColor[lColor].getBlue() + ")");
+//        System.out.print(
+//            "Random:(" + lTabColor[i].getRed() + "," + lTabColor[i].getGreen() + "," + lTabColor[i].getBlue() + ")");
+//        System.out.print("(" + lTabColor[lColor].getRed() + "," + lTabColor[lColor].getGreen() + ","
+//            + lTabColor[lColor].getBlue() + ")");
         System.out.print("(" + lInit_x + "," + lInit_y + "," + lInitDirection + "," + lTaille + ")");
         System.out.println(
             "(" + lTypeDeplacement + "," + lProbaG + "," + lProbaTD + "," + lProbaD + "," + lProbaSuivre + ");");
 
         // création et ajout de la fourmi dans la colonie
-        lFourmi = new CFourmi(lTabColor[i], lTabColor[lColor], lProbaTD, lProbaG, lProbaD, lProbaSuivre, mPainting,
+        lFourmi = new CFourmi(lTabColor, lProbaTD, lProbaG, lProbaD, lProbaSuivre, mPainting,
             lTypeDeplacement, lInit_x, lInit_y, lInitDirection, lTaille, lSeuilLuminance, this);
         mColonie.addElement(lFourmi);
       }
